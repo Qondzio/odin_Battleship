@@ -4,6 +4,15 @@ export default function gameboard(){
     const possibleAttacks=[];
     let countedAttacks=[];
     const shipPosition=[];
+    let rotate=false;
+
+    function setRotate(value) {
+        rotate = value;
+    }
+
+    function getRotate() {
+        return rotate;
+    }
 
     (function fillBoard(){
         const playerBoard=document.querySelector(".playerGameboard");
@@ -31,9 +40,18 @@ export default function gameboard(){
     function showAdjacent(div){
         let divsArray=[];
         for(let x=1;x<5;x++){
-            
-            const columnId=parseInt(div.getAttribute('column'))+x;
-            const rowId=parseInt(div.getAttribute('row'));
+            let columnId;
+            let rowId;
+            if(rotate===false){
+                columnId=parseInt(div.getAttribute('column'))+x;
+                rowId=parseInt(div.getAttribute('row'));
+                
+            }
+            else if(rotate===true){
+                columnId=parseInt(div.getAttribute('column'));
+                rowId=parseInt(div.getAttribute('row'))+x;
+                
+            }
             const adjacentDiv=document.querySelector(`.row[row="${rowId}"][column="${columnId}"]`);
             if(adjacentDiv){
                 divsArray.push(adjacentDiv);
@@ -55,5 +73,5 @@ export default function gameboard(){
         
     }
 
-    return {receiveAttack}
+    return {receiveAttack,setRotate,getRotate}
 }
