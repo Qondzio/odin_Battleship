@@ -1,4 +1,5 @@
 import ships from './ship.js'
+import { getSelectedLength } from './control.js';
 
 export default function gameboard(){
     const possibleAttacks=[];
@@ -39,7 +40,8 @@ export default function gameboard(){
 
     function showAdjacent(div){
         let divsArray=[];
-        for(let x=1;x<5;x++){
+        const selectedLength=getSelectedLength();
+        for(let x=1;x<selectedLength;x++){
             let columnId;
             let rowId;
             if(rotate===false){
