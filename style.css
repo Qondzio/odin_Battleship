@@ -33,18 +33,17 @@ main{
     flex-direction: column;
     gap: 5px;
 }
-.ships>span{
+.selectShip{
     text-align: left;
     padding: 5px 15px;
-    border: 2px solid rgb(64, 216, 64);
+    border: 2px solid rgb(232, 235, 232);
     border-radius: 5px;
     font-size: 17px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
-
-
 
 .ships>span p{
     margin: 0;
@@ -103,6 +102,11 @@ button{
 
 .selected{
     background-color: rgb(64, 216, 64);
+}
+
+.selectedShip{
+    background-color: rgba(64, 216, 64, 0.377);
+    border: 2px solid rgb(64, 216, 64);
 }
 
 .badSelect, .badSelect:hover{
