@@ -105,18 +105,17 @@ export default function gameboard(){
     }
 
     function placeShip(clickedDiv){
-        divsArray.forEach(element =>{
+        if(getSelectedLength() === divsArray.length){
+            divsArray.forEach(element =>{
             const div=document.querySelector(`.row[row="${element.getAttribute('row')}"][column="${element.getAttribute('column')}"]`);
             div.setAttribute('selected',1);
-        })
-        clickedDiv.setAttribute('selected',1);
-        if(getSelectedLength() === divsArray.length){
+            })
+            clickedDiv.setAttribute('selected',1);
             for(let div of divsArray){
                 shipPosition.push([[div.getAttribute('row'),div.getAttribute('column')],getSelectedLength()])
             }
             blankDiv(getSelectedLength());
-        }
-        
+        } 
     }
 
     function receiveAttack(x,y){
