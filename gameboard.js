@@ -1,11 +1,12 @@
 import ships from './ship.js'
-import { getSelectedLength } from './control.js';
+import { blankDiv, getSelectedLength } from './control.js';
 
 export default function gameboard(){
     const possibleAttacks=[];
     let countedAttacks=[];
-    const shipPosition=[];
+    let shipPosition=[];
     let rotate=false;
+    let divsArray=[];
 
     function setRotate(value) {
         rotate = value;
@@ -27,48 +28,95 @@ export default function gameboard(){
                 div.setAttribute('column',j);
                 
                 div.addEventListener('mouseover', ()=>{
-                    showAdjacent(div)
+                    showAdjacent(div, true)
                 })
 
                 div.addEventListener('mouseout', ()=>{
-                    showAdjacent(div)
+                    showAdjacent(div, false)
+                })
+
+                div.addEventListener('click', ()=>{
+                    placeShip(div)
+                    
                 })
                 playerBoard.appendChild(div);
             }
         }
     })()
 
-    function showAdjacent(div){
-        let divsArray=[];
+    function showAdjacent(div, isMOuseOver){
+        divsArray=[];
         const selectedLength=getSelectedLength();
-        for(let x=1;x<selectedLength;x++){
+        for(let x=0;x<=selectedLength-1;x++){
             let columnId;
             let rowId;
             if(rotate===false){
                 columnId=parseInt(div.getAttribute('column'))+x;
                 rowId=parseInt(div.getAttribute('row'));
-                
             }
             else if(rotate===true){
                 columnId=parseInt(div.getAttribute('column'));
                 rowId=parseInt(div.getAttribute('row'))+x;
-                
             }
             const adjacentDiv=document.querySelector(`.row[row="${rowId}"][column="${columnId}"]`);
             if(adjacentDiv){
-                divsArray.push(adjacentDiv);
-                adjacentDiv.classList.toggle('selected')
+                if(adjacentDiv.getAttribute('selected') !== '1'){
+                    adjacentDiv.classList.toggle('selected');
+                    divsArray.push(adjacentDiv);
+                }
+                else if(div.getAttribute('selected') === '1' || adjacentDiv.getAttribute('selected') === '1'){
+                    const badDivsArray=[];
+                    for(let x=0; x<=getSelectedLength()-1; x++){
+                            let columnId;
+                            let rowId;
+                            if(rotate===false){
+                                columnId=parseInt(div.getAttribute('column'))+x;
+                                rowId=parseInt(div.getAttribute('row'));
+                            }
+                            else if(rotate===true){
+                                columnId=parseInt(div.getAttribute('column'));
+                                rowId=parseInt(div.getAttribute('row'))+x;
+                            }
+                            const badDivs=document.querySelector(`.row[row="${rowId}"][column="${columnId}"]`);
+                            badDivsArray.push(badDivs);
+                        }
+                    if(isMOuseOver === true){
+                        for(let x of badDivsArray){
+                            if(x)
+                            x.classList.add('badSelect')
+                        }
+                    }
+                    else{
+                        for(let item of badDivsArray){
+                            item.classList.remove('badSelect')
+                        }
+                    }
+                    return
+                }
             }
             else{
                 for(let item of divsArray){
-                    const div2=item;
-                    div2.classList.toggle('badSelect')
+                    item.classList.toggle('badSelect');
                 }
-                div.classList.toggle('badSelect')
                 return
             }
         }
-        div.classList.toggle('selected')
+
+    }
+
+    function placeShip(clickedDiv){
+        divsArray.forEach(element =>{
+            const div=document.querySelector(`.row[row="${element.getAttribute('row')}"][column="${element.getAttribute('column')}"]`);
+            div.setAttribute('selected',1);
+        })
+        clickedDiv.setAttribute('selected',1);
+        if(getSelectedLength() === divsArray.length){
+            for(let div of divsArray){
+                shipPosition.push([[div.getAttribute('row'),div.getAttribute('column')],getSelectedLength()])
+            }
+            blankDiv(getSelectedLength());
+        }
+        
     }
 
     function receiveAttack(x,y){
