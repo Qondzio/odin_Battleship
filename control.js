@@ -13,14 +13,41 @@ let selectedLength=5;
 function getSelectedLength(){
     return selectedLength;
 }
-export {getSelectedLength}
-
 document.querySelectorAll('.selectShip').forEach(element =>[
     element.addEventListener('click', ()=>{
         selectedLength=element.querySelector('.shipPreview').childElementCount;
         document.querySelectorAll('.selectShip').forEach(item =>{
             item.classList.remove('selectedShip')
+            
         })
         element.classList.toggle('selectedShip')
     })
 ])
+
+
+//Make a div 'blank' and unable to choose once a ship has been placed
+const selectedLengths=[];
+function blankDiv(shipLength){
+    console.log(shipLength);
+    
+    document.querySelectorAll('.selectShip').forEach(div =>{
+        if(div.querySelector('.shipPreview').childElementCount === shipLength){
+            div.classList.remove('selectedShip')
+            div.classList.add('disabledDiv');
+            selectedLengths.push(getSelectedLength());
+            for(let x=5; x>0;x--){
+                if(selectedLengths.includes(x) === false){
+                    selectedLength=x;
+                    break;
+                }
+            }                      
+        }
+    })
+    document.querySelectorAll('.selectShip').forEach(div =>{
+        if(div.querySelector('.shipPreview').childElementCount === selectedLength && div.classList.contains('disabledDiv') === false){
+            div.classList.add('selectedShip');
+        }
+    })
+}
+
+export {getSelectedLength, blankDiv}
