@@ -113,6 +113,12 @@ button{
     background-color: rgb(240, 60, 60);
 }
 
+.disabledDiv{
+    opacity: 0.4;
+    pointer-events: none;
+    border: 2px solid rgba(232, 235, 232, 0.267);
+}
+
 .computerGameboard{
     width: 500px;
     height: 500px;
