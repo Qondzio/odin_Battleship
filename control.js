@@ -48,6 +48,15 @@ function blankDiv(shipLength){
             div.classList.add('selectedShip');
         }
     })
+
+    if(selectedLengths.length === 5){
+        document.querySelectorAll('.row').forEach(div =>{
+            div.classList.toggle('disabledRow')
+        })
+        document.getElementById('rotate').classList.toggle('disabledDiv')
+        document.getElementById('start').style.backgroundColor='rgba(21, 190, 21, 0.72)';
+        document.getElementById('start').style.border='1px solid rgba(21, 190, 21, 0.72)';
+    }
 }
 
 export {getSelectedLength, blankDiv}
