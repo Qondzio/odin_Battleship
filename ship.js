@@ -1,4 +1,4 @@
-export default function Ships(length){
+export default function ships(length){
     let hitCount=0;
 
     function hit(){
@@ -9,5 +9,9 @@ export default function Ships(length){
         return (length===hitCount) ? true:false;
     }
 
-    return {length,hitCount,hit,isSunk}
+    function getHitCount(){
+        return hitCount;
+    }
+
+    return {hit,isSunk, getHitCount}
 }
