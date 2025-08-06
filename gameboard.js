@@ -1,10 +1,11 @@
-import ships from './ship.js'
 import { blankDiv, getSelectedLength } from './control.js';
+import ships from './ship.js'
 
 export default function gameboard(){
-    const possibleAttacks=[];
+    let possibleAttacks=[];
     let countedAttacks=[];
-    let shipPosition=[];
+    let playerShipPosition=[];
+    let computerShipPosition=[];
     let rotate=false;
     let divsArray=[];
 
@@ -111,16 +112,113 @@ export default function gameboard(){
             div.setAttribute('selected',1);
             })
             clickedDiv.setAttribute('selected',1);
+            const ship=ships(getSelectedLength());
             for(let div of divsArray){
-                shipPosition.push([[div.getAttribute('row'),div.getAttribute('column')],getSelectedLength()])
+                playerShipPosition.push({
+                    position: [div.getAttribute('row'),div.getAttribute('column')],
+                    ship: ship
+                })
             }
-            blankDiv(getSelectedLength());
+            blankDiv(getSelectedLength());            
         } 
     }
 
+    function generateComputerPosition(){
+        const computerShips=[];
+        const shipLenghts=[5,4,3,2,1];
+
+        shipLenghts.forEach(item =>{
+            generatePosition(item);
+        })
+
+        function generatePosition(length){
+            const computerRow=Math.floor(Math.random()*10)+1;
+            const computerColumn=Math.floor(Math.random()*10)+1;
+            const computerRotate=Math.random() > 0.5;
+
+            console.log(computerRow);
+            console.log(computerColumn);
+            console.log(computerRotate);
+            
+            
+            if(computerRotate === false){
+                if(computerColumn+length<=11){
+                    isShipPlaced(computerRow, computerColumn, false, length)
+                }
+                else if(computerRow+length<=11){
+                    isShipPlaced(computerRow, computerColumn, true, length)
+                }
+                else{
+                    generatePosition(length);
+                    return
+                }
+            }
+            else{
+                if(computerRow+length<=11){
+                    isShipPlaced(computerRow, computerColumn, true, length)
+                }
+                else if(computerColumn+length<=11){
+                    isShipPlaced(computerRow, computerColumn, false, length)
+                }
+                else{
+                    generatePosition(length);
+                    return
+                }
+            }
+        }
+
+        function isShipPlaced(computerRow, computerColumn, computerRotate, length){
+            let generatedPosition=[];
+            for(let x=0;x<length;x++){
+                if(computerRotate === false){
+                    if(computerShips.some(item =>{
+                        return item[0] === computerRow && item[1] === computerColumn+x;
+                    })){
+                        generatePosition(length)
+                        return
+                    }
+                    else{
+                        generatedPosition.push([computerRow,computerColumn+x])
+                    }
+                }
+                else{
+                    if(computerShips.some(item =>{
+                        return item[0] === computerRow+x && item[1] === computerColumn
+                    })){
+                        generatePosition(length)
+                        return
+                    }
+                    else{
+                        generatedPosition.push([computerRow+x,computerColumn])
+                    }
+                }
+            }
+            
+            generatedPosition.forEach(item =>{
+                computerShips.push(item);
+            })
+        }
+
+        computerShips.forEach(arr =>{
+            document.querySelector('.computerGameboard').querySelectorAll('.row').forEach(div =>{
+                if(div.getAttribute('row') === arr[0].toString() && div.getAttribute('column') === arr[1].toString()){
+                    div.style.backgroundColor='red'
+                }
+            })
+            console.log(arr);
+                
+            
+            console.log('-------------');
+            
+            
+        })
+
+        console.log(computerShips.length);
+        
+    }
     function receiveAttack(x,y){
         
     }
 
-    return {receiveAttack,setRotate,getRotate}
+    return {receiveAttack,setRotate,getRotate, generateComputerPosition}
 }
