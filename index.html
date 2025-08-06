@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Place your ships!</h1>
+    <h1 class="info">FIRST WHO WILL SINK ALL SHIPS WINS! <br>
+        🟩 - Ship missed <br>
+        🟥 - Ship hitted
+    </h1>
+    <h1 class="gameInfo">Place your ships!</h1>
 
     <main>
         <div class="choose">
@@ -59,12 +63,18 @@
                 <button id="start">Start game</button>
             </div>
         </div>
-        <div class="playerGameboard">
+        <div class="mainLeft">
+            <h2 class="boardInfo">Your fleet</h2>
+            <div class="playerGameboard">
             
+            </div>
         </div>
-        <!-- <div class="computerGameboard">
+        <div class="mainRight">
+            <h2 class="boardInfo">Your fleet</h2>
+            <div class="computerGameboard">
             
-        </div> -->
+            </div>
+        </div>
     </main>
 
     <script type="module" src="control.js"></script>
