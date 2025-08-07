@@ -1,17 +1,28 @@
 export default function ships(length){
     let hitCount=0;
+    const shiplength=length;
+    const shipPosition=[];
 
-    function hit(){
+    function hit(position){
         hitCount++;
-    }
 
-    function isSunk(){
-        return (length===hitCount) ? true:false;
+        (function addPosition(){
+            shipPosition.push(position);
+        })()
     }
 
     function getHitCount(){
         return hitCount;
     }
 
-    return {hit,isSunk, getHitCount}
+    function isSunk(){
+        return (shiplength===getHitCount()) ? true:false;
+    }
+
+    function getShipPosition(){
+        return shipPosition;
+    }
+    
+
+    return {hit,isSunk, getHitCount, getShipPosition}
 }
