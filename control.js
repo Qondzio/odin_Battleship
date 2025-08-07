@@ -1,3 +1,4 @@
+
 import gameboard from "./gameboard.js";
 
 const game=gameboard()
@@ -72,7 +73,7 @@ function startGame(){
         document.querySelector('.choose').style.display='none';
         document.querySelector('.computerGameboard').style.display='grid';
         document.querySelector('.info').style.display='block';
-        document.querySelector('.gameInfo').textContent='Your turn!'
+        document.querySelector('.gameInfo').textContent=`Your turn! Click on computer's board to attack`;
         document.querySelectorAll('.boardInfo').forEach(div =>{
             div.style.display='block';
         });
@@ -83,11 +84,13 @@ function startGame(){
                 div.classList.add('row');
                 div.setAttribute('row',i);
                 div.setAttribute('column',j);
-
                 document.querySelector('.computerGameboard').appendChild(div);
+
+                div.addEventListener('click', ()=>{
+                    game.receiveAttack(parseInt(div.getAttribute('row')), parseInt(div.getAttribute('column')), game.getcomputerShipPosition())
+                })
             }
         }
-
         game.generateComputerPosition();
     })()
 }
