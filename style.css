@@ -145,6 +145,9 @@ button{
 .computerGameboard>div{
     border: 1px solid rgba(255, 255, 255, 0.712);
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .computerGameboard>div:hover{
@@ -152,9 +155,15 @@ button{
     cursor: pointer;
 }
 
+.computerGameboard .row>p{
+    margin: 0;
+    text-align: center;
+}
+
 .info{
-    margin-top: -100px;
+    margin-top: -150px;
     display: none;
+    font-size: 1.7rem;
 }
 
 .boardInfo{
@@ -173,4 +182,10 @@ button{
 .fleetSign{
     margin: 20px;
     display: none;
+}
+
+.shipDestroyed{
+    background-color: rgba(240, 60, 60, 0.5);
+    cursor: not-allowed;
+    pointer-events: none;
 }
