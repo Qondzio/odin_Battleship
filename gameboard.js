@@ -17,6 +17,14 @@ export default function gameboard(){
         return rotate;
     }
 
+    function getcomputerShipPosition(){
+        return computerShipPosition;
+    }
+
+    function getplayerShipPosition(){
+        return playerShipPosition;
+    }
+
     (function fillBoard(){
         const playerBoard=document.querySelector(".playerGameboard");
         
@@ -115,7 +123,7 @@ export default function gameboard(){
             const ship=ships(getSelectedLength());
             for(let div of divsArray){
                 playerShipPosition.push({
-                    position: [div.getAttribute('row'),div.getAttribute('column')],
+                    position: [parseInt(div.getAttribute('row')),parseInt(div.getAttribute('column'))],
                     ship: ship
                 })
             }
@@ -124,7 +132,6 @@ export default function gameboard(){
     }
 
     function generateComputerPosition(){
-        const computerShips=[];
         const shipLenghts=[5,4,3,2,1];
 
         shipLenghts.forEach(item =>{
@@ -135,10 +142,6 @@ export default function gameboard(){
             const computerRow=Math.floor(Math.random()*10)+1;
             const computerColumn=Math.floor(Math.random()*10)+1;
             const computerRotate=Math.random() > 0.5;
-
-            console.log(computerRow);
-            console.log(computerColumn);
-            console.log(computerRotate);
             
             
             if(computerRotate === false){
@@ -169,56 +172,85 @@ export default function gameboard(){
 
         function isShipPlaced(computerRow, computerColumn, computerRotate, length){
             let generatedPosition=[];
+            const ship=ships(length);
             for(let x=0;x<length;x++){
                 if(computerRotate === false){
-                    if(computerShips.some(item =>{
-                        return item[0] === computerRow && item[1] === computerColumn+x;
+                    if(computerShipPosition.some(item =>{
+                        return item.position[0] === computerRow && item.position[1] === computerColumn+x;
                     })){
                         generatePosition(length)
                         return
                     }
                     else{
-                        generatedPosition.push([computerRow,computerColumn+x])
+                        generatedPosition.push({
+                            position: [computerRow,computerColumn+x],
+                            ship: ship
+                        })
                     }
                 }
                 else{
-                    if(computerShips.some(item =>{
-                        return item[0] === computerRow+x && item[1] === computerColumn
+                    if(computerShipPosition.some(item =>{
+                        return item.position[0] === computerRow+x && item.position[1] === computerColumn
                     })){
                         generatePosition(length)
                         return
                     }
                     else{
-                        generatedPosition.push([computerRow+x,computerColumn])
+                        generatedPosition.push({
+                            position: [computerRow+x,computerColumn],
+                            ship: ship
+                        })
                     }
                 }
             }
             
             generatedPosition.forEach(item =>{
-                computerShips.push(item);
+                computerShipPosition.push(item);
             })
+
         }
 
-        computerShips.forEach(arr =>{
+        computerShipPosition.forEach(arr =>{
             document.querySelector('.computerGameboard').querySelectorAll('.row').forEach(div =>{
-                if(div.getAttribute('row') === arr[0].toString() && div.getAttribute('column') === arr[1].toString()){
+                if(parseInt(div.getAttribute('row')) === arr.position[0] && parseInt(div.getAttribute('column')) === arr.position[1]){
                     div.style.backgroundColor='red'
-                }
+                }              
             })
-            console.log(arr);
-                
-            
-            console.log('-------------');
-            
-            
         })
-
-        console.log(computerShips.length);
         
     }
-    function receiveAttack(x,y){
+    function receiveAttack(x,y,board){
+        let arrayIndex;
+        let hit;
+          if(board.some((item,index) =>{
+            if(item.position[0] === x && item.position[1] === y){
+                arrayIndex=index;
+                hit=item;
+                return true;
+            }
+        })){
+            hit.ship.hit([x,y]);
+            document.querySelector(`.computerGameboard .row[row='${x}'][column='${y}']`).style.backgroundColor='blue';
+            if(hit.ship.isSunk()){
+                hit.ship.getShipPosition().forEach(position =>{
+                    const div=document.querySelector(`.computerGameboard .row[row='${position[0]}'][column='${position[1]}']`);
+                    div.style.backgroundColor='rgba(83, 7, 7, 0.91)';
+                    div.classList.toggle('shipDestroyed');
+                    const p=document.createElement('p');
+                    p.textContent='🔥';
+                    div.appendChild(p);
+                })
+            }
+            board.splice(arrayIndex,1);
+            if(board.length === 0){
+                // winGame();
+            }
+        }
+        else{
+            console.log(false);
+        }
         
     }
 
-    return {receiveAttack,setRotate,getRotate, generateComputerPosition}
+    return {receiveAttack,setRotate,getRotate, generateComputerPosition, getcomputerShipPosition, getplayerShipPosition}
 }
