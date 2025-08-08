@@ -1,4 +1,4 @@
-import { blankDiv, getSelectedLength } from './control.js';
+import { blankDiv, getSelectedLength, winGame } from './control.js';
 import ships from './ship.js'
 
 export default function gameboard(){
@@ -209,20 +209,13 @@ export default function gameboard(){
             })
 
         }
-
-        computerShipPosition.forEach(arr =>{
-            document.querySelector('.computerGameboard').querySelectorAll('.row').forEach(div =>{
-                if(parseInt(div.getAttribute('row')) === arr.position[0] && parseInt(div.getAttribute('column')) === arr.position[1]){
-                    div.style.backgroundColor='red'
-                }              
-            })
-        })
-        
     }
-    function receiveAttack(x,y,board){
+    
+    function receiveAttack(x,y,board,player){
         let arrayIndex;
         let hit;
-          if(board.some((item,index) =>{
+        let matchedDiv=document.querySelector(`.${player} .row[row='${x}'][column='${y}']`);
+        if(board.some((item,index) =>{
             if(item.position[0] === x && item.position[1] === y){
                 arrayIndex=index;
                 hit=item;
@@ -230,24 +223,27 @@ export default function gameboard(){
             }
         })){
             hit.ship.hit([x,y]);
-            document.querySelector(`.computerGameboard .row[row='${x}'][column='${y}']`).style.backgroundColor='blue';
+            matchedDiv.style.backgroundColor='red';
             if(hit.ship.isSunk()){
                 hit.ship.getShipPosition().forEach(position =>{
-                    const div=document.querySelector(`.computerGameboard .row[row='${position[0]}'][column='${position[1]}']`);
+                    const div=document.querySelector(`.${player} .row[row='${position[0]}'][column='${position[1]}']`);
                     div.style.backgroundColor='rgba(83, 7, 7, 0.91)';
                     div.classList.toggle('shipDestroyed');
                     const p=document.createElement('p');
                     p.textContent='🔥';
+                    p.classList.add('emoji')
                     div.appendChild(p);
                 })
             }
             board.splice(arrayIndex,1);
+            matchedDiv.classList.toggle('missed');
             if(board.length === 0){
-                // winGame();
+                player === 'computerGameboard' ? winGame('player') : winGame('computer');
             }
         }
         else{
-            console.log(false);
+            matchedDiv.style.backgroundColor='rgb(252, 235, 3)';
+            matchedDiv.classList.toggle('missed');
         }
         
     }
