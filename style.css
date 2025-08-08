@@ -94,6 +94,9 @@ button{
     border: 1px solid rgba(255, 255, 255, 0.712);
     border-radius: 5px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -155,11 +158,6 @@ button{
     cursor: pointer;
 }
 
-.computerGameboard .row>p{
-    margin: 0;
-    text-align: center;
-}
-
 .info{
     margin-top: -150px;
     display: none;
@@ -188,4 +186,15 @@ button{
     background-color: rgba(240, 60, 60, 0.5);
     cursor: not-allowed;
     pointer-events: none;
+}
+
+.missed{
+    background-color: rgb(64, 216, 64);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.emoji{
+    margin: 0;
+    text-align: center;
 }
