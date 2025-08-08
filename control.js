@@ -4,7 +4,6 @@ import gameboard from "./gameboard.js";
 const game=gameboard()
 //Change rotation while placing ships
 document.getElementById('rotate').addEventListener('click', ()=>{
-    game.generateComputerPosition();
     (game.getRotate()===false)? game.setRotate(true):game.setRotate(false);
 })
 //Select length of places ships
@@ -87,7 +86,8 @@ function startGame(){
                 document.querySelector('.computerGameboard').appendChild(div);
 
                 div.addEventListener('click', ()=>{
-                    game.receiveAttack(parseInt(div.getAttribute('row')), parseInt(div.getAttribute('column')), game.getcomputerShipPosition())
+                    game.receiveAttack(parseInt(div.getAttribute('row')), parseInt(div.getAttribute('column')), game.getcomputerShipPosition(), 'computerGameboard');
+                    if(endGame !== 1) computerMove();
                 })
             }
         }
@@ -95,4 +95,42 @@ function startGame(){
     })()
 }
 
-export {getSelectedLength, blankDiv}
+//Create a possible moves for computer
+const computerPossibleMoves=[];
+for(let i=1;i<=10;i++){
+    for(let j=1; j<=10; j++){
+        computerPossibleMoves.push([i,j]);
+    }
+}
+
+async function computerMove(){
+    document.querySelector('.computerGameboard').style.pointerEvents = 'none';
+    document.querySelector('.gameInfo').textContent=`Computer's turn...`;
+    function delay(){
+        return new Promise(resolve => setTimeout(resolve,700))
+    }
+    await delay();
+    document.querySelector('.computerGameboard').style.pointerEvents = 'auto';
+    document.querySelector('.gameInfo').textContent=`Your turn! Click on computer's board to attack`;
+
+    const index=Math.floor(Math.random()*computerPossibleMoves.length);
+    const move=computerPossibleMoves[index];
+    
+    game.receiveAttack(move[0],move[1],game.getplayerShipPosition(), 'playerGameboard');
+    computerPossibleMoves.splice(index,1);
+}
+
+let endGame=0;
+function winGame(player){
+    endGame=1;
+    document.querySelector('.computerGameboard').style.pointerEvents = 'none';
+    if(player === 'player'){
+        document.querySelector('.gameInfo').textContent='YOU HAVE WON 🎉🎉🎉';
+    }
+    else{
+        document.querySelector('.gameInfo').textContent='COMPUTER HAS WON 💀💀💀';
+    }
+    
+}
+
+export {getSelectedLength, blankDiv, winGame}
